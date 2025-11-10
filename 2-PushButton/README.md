@@ -128,7 +128,7 @@ void loop() {
 
 ## 📸 Bukti Visual
 
-![Push Button ESP32-S3](assets/PushButton.jpeg)
+![Push Button ESP32-S3](../assets/PushButton.jpeg)
 
 
 ---

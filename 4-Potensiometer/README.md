@@ -104,7 +104,7 @@ void loop() {
 
 ### Setup Hardware
 
-![Serial Monitor](Potensiometer.jpeg)
+![Serial Monitor](../assets/Potensiometer.jpeg)
 
 ## 🎥 Bukti Video
 

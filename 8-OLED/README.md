@@ -187,7 +187,7 @@ xSemaphoreGive(i2cMutex);
 ---
 
 ## 📸 Bukti Visual
-![OLED ESP32-S3](assets/OLED.jpeg)
+![OLED ESP32-S3](../assets/OLED.jpeg)
 
 ---
 

@@ -125,7 +125,7 @@ Core 1: Posisi Servo terakhir = 15
 
 ## 📸 Bukti Visual
 
-![Servo Movement](assets/Servo.jpeg)
+![Servo Movement](../assets/Servo.jpeg)
 
 ## 🎥 Bukti Video
 

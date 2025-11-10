@@ -148,7 +148,7 @@ Core 1 - Posisi Encoder = 2	Tombol = Ditekan
 ---
 
 ## 📸 Bukti Visual
-![Rotary Encoder ESP32-S3](assets/Encoder.jpeg)
+![Rotary Encoder ESP32-S3](../assets/Encoder.jpeg)
 ---
 
 ## 🎥 Bukti Video

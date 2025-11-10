@@ -116,7 +116,7 @@ void loop() {
 
 ### Setup Hardware Buzzer
 
-![Setup Buzzer ESP32-S3](assets/Buzzer.jpeg)
+![Setup Buzzer ESP32-S3](../assets/Buzzer.jpeg)
 
 ---
 

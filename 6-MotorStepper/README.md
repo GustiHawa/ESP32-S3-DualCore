@@ -141,7 +141,7 @@ Core 1: Putar CCW
 ---
 
 ## 📸 Bukti Visual
-![Motor Stepper ESP32-S3](assets/MotorStepper.jpeg)
+![Motor Stepper ESP32-S3](../assets/MotorStepper.jpeg)
 ---
 
 ## 🎥 Video Demo
