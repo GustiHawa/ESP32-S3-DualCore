@@ -21,40 +21,69 @@ volatile unsigned long counter = 0;
 TaskHandle_t TaskCore0;
 TaskHandle_t TaskCore1;
 
-// Core 0 : Hitung waktu
+// Mutex untuk akses I2C
+SemaphoreHandle_t i2cMutex;
+
+// ================= TASK CORE 0: Hitung counter =================
 void taskCore0(void *pvParameters) {
-  while (true) {
+  String coreID = String(xPortGetCoreID());
+  for (;;) {
     counter++;   // naik terus setiap 100 ms
-    delay(100);
+    Serial.print("Core ");
+    Serial.print(coreID);
+    Serial.println(": Counter bertambah");
+
+    vTaskDelay(100 / portTICK_PERIOD_MS);
   }
 }
 
-// Core 1 : Tampilkan ke OLED
+// ================= TASK CORE 1: Tampilkan ke OLED =================
 void taskCore1(void *pvParameters) {
-  while (true) {
-    display.clearDisplay();
-    display.setTextSize(1);
-    display.setTextColor(SSD1306_WHITE);
+  String coreID = String(xPortGetCoreID());
+  for (;;) {
+    // Ambil mutex sebelum akses I2C
+    if (xSemaphoreTake(i2cMutex, portMAX_DELAY) == pdTRUE) {
+      display.clearDisplay();
+      display.setTextSize(1);
+      display.setTextColor(SSD1306_WHITE);
 
-    display.setCursor(0, 10);
-    display.println("ESP32-S3 Dual Core");
+      display.setCursor(0, 0);
+      display.println("ESP32-S3 Dual Core");
 
-    display.setCursor(0, 30);
-    display.print("Counter: ");
-    display.println(counter);
+      display.setCursor(0, 20);
+      display.print("Counter: ");
+      display.println(counter);
 
-    display.display();
-    delay(1000);
+      display.setCursor(0, 40);
+      display.print("OLED Task berjalan di Core: ");
+      display.println(coreID);
+
+      display.display();
+
+      xSemaphoreGive(i2cMutex);
+    }
+
+    Serial.print("Core ");
+    Serial.print(coreID);
+    Serial.println(": OLED diperbarui");
+
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 }
 
-// Setup
+// ================= SETUP =================
 void setup() {
   Serial.begin(115200);
   delay(1000);
 
-  // Inisialisasi I2C dan OLED
+  Serial.println("=== Program OLED Dual-Core ===");
+
+  // Inisialisasi I2C
   Wire.begin(SDA_PIN, SCL_PIN);
+
+  // Mutex untuk akses I2C
+  i2cMutex = xSemaphoreCreateMutex();
+
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println("Gagal inisialisasi OLED!");
     while (true);
@@ -76,7 +105,7 @@ void setup() {
     NULL,
     1,
     &TaskCore0,
-    0  // core 0
+    0  // Core 0
   );
 
   // Jalankan task Core 1 (tampilkan OLED)
@@ -87,7 +116,7 @@ void setup() {
     NULL,
     1,
     &TaskCore1,
-    1  // core 1
+    1  // Core 1
   );
 }
 

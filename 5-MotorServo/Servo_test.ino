@@ -1,7 +1,7 @@
 #include <Arduino.h>
-#include <ESP32Servo.h>  // Gunakan library ESP32Servo, bukan Servo biasa
+#include <ESP32Servo.h> 
 
-#define SERVO_PIN 17
+#define SERVO_PIN 45
 
 Servo myServo;
 
@@ -11,9 +11,12 @@ TaskHandle_t TaskCore1;
 volatile int servoPos = 0;   // posisi servo bersama antar-core
 volatile bool arahNaik = true;
 
-// Core 0 : Gerakkan Servo
+// ================= TASK CORE 0: Gerakkan Servo =================
 void taskCore0(void *pvParameters) {
-  while (true) {
+  myServo.attach(SERVO_PIN); // attach di dalam task
+  myServo.write(0);
+  
+  for (;;) {
     if (arahNaik) {
       servoPos += 5;
       if (servoPos >= 180) arahNaik = false;
@@ -22,41 +25,46 @@ void taskCore0(void *pvParameters) {
       if (servoPos <= 0) arahNaik = true;
     }
 
-    myServo.write(servoPos);
-    delay(100);  // kecepatan gerak servo
+    myServo.write(servoPos);  // update posisi servo
+
+    // log Core 0 dibatasi agar tidak terlalu sering
+    static unsigned long lastPrint = 0;
+    if (millis() - lastPrint > 200) {
+      Serial.print("Core 0: Servo bergerak ke posisi = ");
+      Serial.println(servoPos);
+      lastPrint = millis();
+    }
+
+    vTaskDelay(50 / portTICK_PERIOD_MS);  // kecepatan gerak servo
   }
 }
 
-// Core 1 : Tampilkan Posisi
+// ================= TASK CORE 1: Tampilkan Posisi =================
 void taskCore1(void *pvParameters) {
-  while (true) {
-    Serial.print("Core 1: Posisi Servo = ");
+  for (;;) {
+    Serial.print("Core 1: Posisi Servo terakhir = ");
     Serial.println(servoPos);
-    delay(300);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
   }
 }
 
-// Setup
 void setup() {
   Serial.begin(115200);
   delay(1000);
+  Serial.println("=== Program Servo Dual-Core ===");
 
-  // Inisialisasi servo
-  myServo.attach(SERVO_PIN);
-  myServo.write(0);
-
-  // Jalankan task untuk Core 0 (gerak servo)
+  // Task Core 0: gerakkan servo
   xTaskCreatePinnedToCore(
     taskCore0,
     "TaskCore0",
-    2048,
+    4096, // tingkatkan stack size untuk servo
     NULL,
     1,
     &TaskCore0,
-    0  // core 0
+    0
   );
 
-  // Jalankan task untuk Core 1 (print posisi)
+  // Task Core 1: tampilkan posisi
   xTaskCreatePinnedToCore(
     taskCore1,
     "TaskCore1",
@@ -64,10 +72,10 @@ void setup() {
     NULL,
     1,
     &TaskCore1,
-    1  // core 1
+    1
   );
 }
 
 void loop() {
-  // semua kerja di task
+  // Kosong, semua kerja di task FreeRTOS
 }

@@ -1,141 +1,117 @@
-# 🔴🟢🔵 01 — Dual-Core LED Blinking (ESP32-S3)
+# 🔴🟢🔵 03 — Multi-Core LED Blinking with Serial Output (ESP32-S3)
 
 ## 📘 Deskripsi
 
-Percobaan ini menampilkan implementasi **LED multi-core** pada ESP32-S3 menggunakan **FreeRTOS tasks**.  
-Tujuan utama percobaan adalah menunjukkan bahwa dua core dapat menjalankan **task independen** secara bersamaan tanpa blocking.  
+Percobaan ini menampilkan implementasi LED multi-core pada ESP32-S3 menggunakan FreeRTOS tasks. Tujuan utama percobaan adalah menunjukkan bahwa beberapa task dapat berjalan paralel di core berbeda, dengan interval LED berbeda untuk memvisualisasikan eksekusi simultan.
 
-LED Merah dikendalikan oleh task yang dijalankan di Core 0, sedangkan LED Hijau dan LED Biru dijalankan di Core 1. Masing-masing LED memiliki interval kedip yang berbeda untuk membuktikan eksekusi **task paralel** secara visual.
-
----
+- **LED1** dijalankan di **Core 0**
+- **LED2** dan **LED3** dijalankan di **Core 1**
+- Serial Monitor menampilkan status LED ON/OFF beserta core yang mengeksekusi task
 
 ## 🎯 Tujuan
 
-- Memahami **dual-core multitasking** pada ESP32-S3.  
-- Membuktikan bahwa task berbeda dapat berjalan **simultan** pada core berbeda.  
-- Mengamati kestabilan LED saat task berjalan paralel.
-
----
+- Memahami dual-core multitasking pada ESP32-S3
+- Mengamati eksekusi task paralel pada core berbeda
+- Memvisualisasikan interval berbeda LED untuk membuktikan simultanitas task
 
 ## ⚙️ Hardware Mapping
 
-| Komponen  | Pin     | Mode   | Core Eksekusi |
-|-----------|---------|--------|---------------|
-| LED Merah | GPIO 2  | Output | Core 0        |
-| LED Hijau | GPIO 4  | Output | Core 1        |
-| LED Biru  | GPIO 5  | Output | Core 1        |
-
----
+| Komponen | Pin    | Mode   | Core Eksekusi |
+|----------|--------|--------|---------------|
+| LED1     | GPIO 2 | Output | Core 0        |
+| LED2     | GPIO 4 | Output | Core 1        |
+| LED3     | GPIO 5 | Output | Core 1        |
 
 ## 🧠 Penjelasan Kode
 
-Program ini menggunakan **tiga task FreeRTOS**, yaitu `TaskMerah`, `TaskHijau`, dan `TaskBiru`. Masing-masing task bertanggung jawab mengendalikan satu LED, dan dijalankan di core tertentu menggunakan `xTaskCreatePinnedToCore()`.
+Program ini menggunakan tiga task FreeRTOS, yaitu `Task_LED_Core0`, `Task_LED2_Core1`, dan `Task_LED3_Core1`. Setiap task mengendalikan satu LED dengan interval yang berbeda, dan berjalan pada core tertentu menggunakan `xTaskCreatePinnedToCore()`.
 
-### Definisi Pin dan Task Handle
+### Task LED1 (Core 0)
 
-Di awal program, pin untuk setiap LED didefinisikan, dan task handle disiapkan untuk keperluan referensi task. Pin GPIO yang digunakan adalah 2 untuk LED Merah, 4 untuk LED Hijau, dan 5 untuk LED Biru. Task handle seperti `TaskLED_Merah` digunakan untuk menyimpan referensi task, yang dapat dimanfaatkan jika ingin memanipulasi task di runtime.
+LED1 dikendalikan oleh Core 0. Task ini menyala selama 300 ms dan mati selama 300 ms. Serial Monitor menampilkan status ON/OFF beserta core.
 ```cpp
-#define LED_MERAH 2
-#define LED_HIJAU 4
-#define LED_BIRU 5
+void Task_LED_Core0(void *parameter) {
+  pinMode(LED1, OUTPUT);
+  for(;;) {
+    digitalWrite(LED1, HIGH);
+    Serial.println("LED1 ON | Core 0");
+    vTaskDelay(300 / portTICK_PERIOD_MS);
 
-TaskHandle_t TaskLED_Merah;
-TaskHandle_t TaskLED_Hijau;
-TaskHandle_t TaskLED_Biru;
-```
-
-### Task LED Merah (Core 0)
-
-Task Merah dijalankan di Core 0. Dalam task ini, pin LED Merah diatur sebagai output terlebih dahulu. Task kemudian masuk ke loop tak terbatas, di mana LED Merah menyala selama 500 ms, lalu mati selama 500 ms. Task ini berjalan secara independen di Core 0 sehingga tidak memblokir task lain.
-```cpp
-void TaskMerah(void *pvParameters) {
-  pinMode(LED_MERAH, OUTPUT);
-  while (true) {
-    digitalWrite(LED_MERAH, HIGH);
-    delay(500);
-    digitalWrite(LED_MERAH, LOW);
-    delay(500);
+    digitalWrite(LED1, LOW);
+    Serial.println("LED1 OFF | Core 0");
+    vTaskDelay(300 / portTICK_PERIOD_MS);
   }
 }
 ```
 
-### Task LED Hijau (Core 1)
+### Task LED2 (Core 1)
 
-Task Hijau dijalankan di Core 1. LED Hijau dikendalikan dengan interval kedip 300 ms. Task ini juga berjalan dalam loop tak terbatas, menunjukkan bahwa Core 1 dapat menangani task berbeda secara paralel tanpa mempengaruhi Core 0.
+LED2 dikendalikan oleh Core 1. Interval LED berbeda dari LED1 untuk menunjukkan eksekusi paralel.
 ```cpp
-void TaskHijau(void *pvParameters) {
-  pinMode(LED_HIJAU, OUTPUT);
-  while (true) {
-    digitalWrite(LED_HIJAU, HIGH);
-    delay(300);
-    digitalWrite(LED_HIJAU, LOW);
-    delay(300);
+void Task_LED2_Core1(void *parameter) {
+  pinMode(LED2, OUTPUT);
+  for(;;) {
+    digitalWrite(LED2, HIGH);
+    Serial.println("LED2 ON | Core 1");
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    digitalWrite(LED2, LOW);
+    Serial.println("LED2 OFF | Core 1");
+    vTaskDelay(500 / portTICK_PERIOD_MS);
   }
 }
 ```
 
-### Task LED Biru (Core 1)
+### Task LED3 (Core 1)
 
-Task Biru juga dijalankan di Core 1. LED Biru menyala selama 700 ms dan mati selama 700 ms. Interval berbeda dari LED Hijau membuktikan bahwa task-task di Core 1 berjalan paralel tanpa saling mengganggu.
+LED3 juga dijalankan di Core 1. Intervalnya berbeda dari LED2 untuk memvisualisasikan task paralel di core yang sama.
 ```cpp
-void TaskBiru(void *pvParameters) {
-  pinMode(LED_BIRU, OUTPUT);
-  while (true) {
-    digitalWrite(LED_BIRU, HIGH);
-    delay(700);
-    digitalWrite(LED_BIRU, LOW);
-    delay(700);
+void Task_LED3_Core1(void *parameter) {
+  pinMode(LED3, OUTPUT);
+  for(;;) {
+    digitalWrite(LED3, HIGH);
+    Serial.println("LED3 ON | Core 1");
+    vTaskDelay(700 / portTICK_PERIOD_MS);
+
+    digitalWrite(LED3, LOW);
+    Serial.println("LED3 OFF | Core 1");
+    vTaskDelay(700 / portTICK_PERIOD_MS);
   }
 }
 ```
 
-### Setup Task FreeRTOS
+### Setup FreeRTOS Tasks
 
-Pada fungsi `setup()`, komunikasi serial diinisialisasi untuk menampilkan log. Ketiga task LED dibuat menggunakan `xTaskCreatePinnedToCore()`, yang memetakan masing-masing task ke core tertentu. LED Merah ditempatkan di Core 0, sedangkan LED Hijau dan Biru ditempatkan di Core 1. Fungsi `loop()` sengaja dikosongkan karena semua logika eksekusi LED dijalankan oleh task FreeRTOS.
+Pada `setup()`, Serial Monitor diinisialisasi, dan ketiga task dibuat menggunakan `xTaskCreatePinnedToCore()`.
 ```cpp
 void setup() {
   Serial.begin(115200);
+  delay(1000);
   Serial.println("Mulai program LED multi-core...");
 
-  xTaskCreatePinnedToCore(TaskMerah, "Task Merah", 1000, NULL, 1, &TaskLED_Merah, 0);
-  xTaskCreatePinnedToCore(TaskHijau, "Task Hijau", 1000, NULL, 1, &TaskLED_Hijau, 1);
-  xTaskCreatePinnedToCore(TaskBiru, "Task Biru", 1000, NULL, 1, &TaskLED_Biru, 1);
+  xTaskCreatePinnedToCore(Task_LED_Core0, "LED_Core0", 2048, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(Task_LED2_Core1, "LED2_Core1", 2048, NULL, 1, NULL, 1);
+  xTaskCreatePinnedToCore(Task_LED3_Core1, "LED3_Core1", 2048, NULL, 1, NULL, 1);
 }
 
 void loop() {
-  // Kosong — seluruh logic dijalankan oleh FreeRTOS
+  // Kosong — seluruh logika dijalankan oleh FreeRTOS
 }
 ```
 
----
-
 ## 🧪 Hasil Percobaan
 
-Setelah program dijalankan:
-
-- **LED Merah** berkedip setiap 500 ms pada Core 0.
-- **LED Hijau** berkedip setiap 300 ms pada Core 1.
-- **LED Biru** berkedip setiap 700 ms pada Core 1.
-
-Semua LED berkedip secara simultan, membuktikan bahwa task-task berjalan paralel pada core berbeda. Pola LED konsisten tanpa jitter, dan Serial Monitor menampilkan log sesuai eksekusi masing-masing core.
-
----
+- **LED1 (Core 0)**: ON/OFF setiap 300 ms
+- **LED2 (Core 1)**: ON/OFF setiap 500 ms
+- **LED3 (Core 1)**: ON/OFF setiap 700 ms
+- Semua LED berjalan paralel, menampilkan log di Serial Monitor sesuai core masing-masing
+- Pola LED konsisten tanpa saling memblokir
 
 ## 📸 Bukti Visual
 
-### Core 0: LED Merah berkedip sesuai interval
+![LED ESP32-S3](assets/LED.jpeg)
 
-![LED Merah Core 0](FOTO)
 
-### Core 1: LED Hijau dan Biru berkedip sesuai interval
-
-![LED Hijau dan Biru Core 1](FOTO)
-
----
-
-## 🎥 Bukti Video
-
-**Demo LED Dual-Core ESP32-S3:**  
-[🎬 Tonton Video](https://drive.google.com/file/d/1hAeKub99bPkifF8pP5IE7t1ZtmiNDyJw/view?usp=drive_link)
+Demo LED Multi-Core ESP32-S3: 🎬 [Tonton di Google Drive](https://drive.google.com/file/d/1R-2hCsyus2fJ4Nnk8G522F3Wh2P1NXfx/view?usp=drive_link)
 
 ---

@@ -1,89 +1,69 @@
-#define LED_MERAH 2
-#define LED_HIJAU 4
-#define LED_BIRU 5
+#include <Arduino.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
-// Task handles (opsional)
-TaskHandle_t TaskLED_Merah;
-TaskHandle_t TaskLED_Hijau;
-TaskHandle_t TaskLED_Biru;
+#define LED1 2   // Core 0
+#define LED2 4   // Core 1
+#define LED3 5   // Core 1
 
-// ==========================
-// Task untuk LED Merah (core 0)
-// ==========================
-void TaskMerah(void *pvParameters) {
-  pinMode(LED_MERAH, OUTPUT);
-  while (true) {
-    digitalWrite(LED_MERAH, HIGH);
-    delay(500);
-    digitalWrite(LED_MERAH, LOW);
-    delay(500);
+// ================= TASK LED1 (CORE 0) =================
+void Task_LED_Core0(void *parameter) {
+  pinMode(LED1, OUTPUT);
+  for(;;) {
+    digitalWrite(LED1, HIGH);
+    Serial.println("LED1 ON | Core 0");
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+
+    digitalWrite(LED1, LOW);
+    Serial.println("LED1 OFF | Core 0");
+    vTaskDelay(300 / portTICK_PERIOD_MS);
   }
 }
 
-// ==========================
-// Task untuk LED Hijau (core 1)
-// ==========================
-void TaskHijau(void *pvParameters) {
-  pinMode(LED_HIJAU, OUTPUT);
-  while (true) {
-    digitalWrite(LED_HIJAU, HIGH);
-    delay(300);
-    digitalWrite(LED_HIJAU, LOW);
-    delay(300);
+// ================= TASK LED2 (CORE 1) =================
+void Task_LED2_Core1(void *parameter) {
+  pinMode(LED2, OUTPUT);
+  for(;;) {
+    digitalWrite(LED2, HIGH);
+    Serial.println("LED2 ON | Core 1");
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+    digitalWrite(LED2, LOW);
+    Serial.println("LED2 OFF | Core 1");
+    vTaskDelay(500 / portTICK_PERIOD_MS);
   }
 }
 
-// ==========================
-// Task untuk LED Biru (core 1)
-// ==========================
-void TaskBiru(void *pvParameters) {
-  pinMode(LED_BIRU, OUTPUT);
-  while (true) {
-    digitalWrite(LED_BIRU, HIGH);
-    delay(700);
-    digitalWrite(LED_BIRU, LOW);
-    delay(700);
+// ================= TASK LED3 (CORE 1) =================
+void Task_LED3_Core1(void *parameter) {
+  pinMode(LED3, OUTPUT);
+  for(;;) {
+    digitalWrite(LED3, HIGH);
+    Serial.println("LED3 ON | Core 1");
+    vTaskDelay(700 / portTICK_PERIOD_MS);  // interval berbeda dari LED2
+
+    digitalWrite(LED3, LOW);
+    Serial.println("LED3 OFF | Core 1");
+    vTaskDelay(700 / portTICK_PERIOD_MS);
   }
 }
 
+// ================= SETUP =================
 void setup() {
   Serial.begin(115200);
+  delay(1000);
   Serial.println("Mulai program LED multi-core...");
 
-  // Buat task untuk LED Merah di core 0
-  xTaskCreatePinnedToCore(
-    TaskMerah,        // Fungsi task
-    "Task Merah",     // Nama task
-    1000,             // Stack size
-    NULL,             // Parameter
-    1,                // Prioritas
-    &TaskLED_Merah,   // Handle
-    0                 // Jalankan di core 0
-  );
+  // Buat Task LED1 di Core 0
+  xTaskCreatePinnedToCore(Task_LED_Core0, "LED_Core0", 2048, NULL, 1, NULL, 0);  
 
-  // Buat task untuk LED Hijau di core 1
-  xTaskCreatePinnedToCore(
-    TaskHijau,
-    "Task Hijau",
-    1000,
-    NULL,
-    1,
-    &TaskLED_Hijau,
-    1                 // Core 1
-  );
+  // Buat Task LED2 di Core 1
+  xTaskCreatePinnedToCore(Task_LED2_Core1, "LED2_Core1", 2048, NULL, 1, NULL, 1);  
 
-  // Buat task untuk LED Biru di core 1 juga
-  xTaskCreatePinnedToCore(
-    TaskBiru,
-    "Task Biru",
-    1000,
-    NULL,
-    1,
-    &TaskLED_Biru,
-    1                 // Core 1 juga
-  );
+  // Buat Task LED3 di Core 1
+  xTaskCreatePinnedToCore(Task_LED3_Core1, "LED3_Core1", 2048, NULL, 1, NULL, 1);  
 }
 
 void loop() {
-  // Kosong, karena semua dijalankan oleh FreeRTOS
+  // Kosong, semua dijalankan oleh FreeRTOS
 }

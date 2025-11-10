@@ -7,32 +7,39 @@ TaskHandle_t TaskCore1;
 
 volatile int potValue = 0;  // variabel global berbagi antar-core
 
-// Core 0 : Baca Potensiometer
+// ================= TASK CORE 0: Baca Potensiometer =================
 void taskCore0(void *pvParameters) {
-  while (true) {
+  for (;;) {
     int val = analogRead(POT_PIN);  // baca nilai analog 0–4095
-    potValue = val;                 // kirim ke variabel global
-    delay(100);                     // sampling setiap 100 ms
+    potValue = val;                 // simpan ke variabel global
+
+    // Tambahkan log untuk Core 0
+    Serial.print("Core 0: Membaca potensiometer = ");
+    Serial.println(val);
+
+    vTaskDelay(100 / portTICK_PERIOD_MS);  // sampling tiap 100 ms
   }
 }
 
-// Core 1 : Tampilkan ke Serial
+// ================= TASK CORE 1: Tampilkan ke Serial =================
 void taskCore1(void *pvParameters) {
-  while (true) {
-    Serial.print("Core 1: Nilai pot = ");
+  for (;;) {
+    Serial.print("Core 1: Nilai pot terakhir = ");
     Serial.println(potValue);
-    delay(300);  // tampilkan tiap 300 ms
+
+    vTaskDelay(300 / portTICK_PERIOD_MS);  // tampilkan tiap 300 ms
   }
 }
 
-// Setup
+// ================= SETUP =================
 void setup() {
   Serial.begin(115200);
   delay(1000);
+  Serial.println("=== Program Dual-Core Potensiometer ===");
 
   pinMode(POT_PIN, INPUT);
 
-  // Jalankan task pembaca di core 0
+  // Task pembaca (Core 0)
   xTaskCreatePinnedToCore(
     taskCore0,
     "TaskCore0",
@@ -43,7 +50,7 @@ void setup() {
     0  // Core 0
   );
 
-  // Jalankan task penampil di core 1
+  // Task penampil (Core 1)
   xTaskCreatePinnedToCore(
     taskCore1,
     "TaskCore1",
@@ -55,6 +62,6 @@ void setup() {
   );
 }
 
-// Loop kosong — semua kerja di task
 void loop() {
+  // Kosong, semua kerja di task FreeRTOS
 }

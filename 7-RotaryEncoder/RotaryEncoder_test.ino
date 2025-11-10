@@ -12,9 +12,13 @@ volatile long encoderValue = 0;
 volatile bool buttonPressed = false;
 int lastStateCLK = HIGH;
 
-// Core 0 : Baca encoder + tombol
+// ================= TASK CORE 0: Baca encoder + tombol =================
 void taskCore0(void *pvParameters) {
-  while (true) {
+  pinMode(CLK, INPUT);
+  pinMode(DT, INPUT);
+  pinMode(SW, INPUT_PULLUP);
+
+  for (;;) {
     int currentStateCLK = digitalRead(CLK);
     int currentStateDT  = digitalRead(DT);
 
@@ -25,51 +29,59 @@ void taskCore0(void *pvParameters) {
       } else {
         encoderValue--;   // putar berlawanan
       }
+
+      // Tampilkan log Core 0 saat terjadi perubahan
+      Serial.print("Core 0 - Encoder bergerak = ");
+      Serial.println(encoderValue);
     }
     lastStateCLK = currentStateCLK;
 
     // Deteksi tombol
     if (digitalRead(SW) == LOW) {
-      buttonPressed = true;
+      if (!buttonPressed) {  // hanya tampil log saat tombol baru ditekan
+        buttonPressed = true;
+        Serial.println("Core 0 - Tombol ditekan");
+      }
     } else {
-      buttonPressed = false;
+      if (buttonPressed) {  // tombol dilepas
+        buttonPressed = false;
+        Serial.println("Core 0 - Tombol dilepas");
+      }
     }
 
-    delay(2);  // debounce & jeda baca singkat
+    vTaskDelay(2 / portTICK_PERIOD_MS);  // debounce & jeda baca singkat
   }
 }
 
-// Core 1 : Tampilkan ke Serial
+// ================= TASK CORE 1: Tampilkan hasil secara periodik =================
 void taskCore1(void *pvParameters) {
-  while (true) {
+  for (;;) {
     Serial.print("Core 1 - Posisi Encoder = ");
     Serial.print(encoderValue);
     Serial.print("\tTombol = ");
     Serial.println(buttonPressed ? "Ditekan" : "Lepas");
-    delay(200);
+
+    vTaskDelay(200 / portTICK_PERIOD_MS);  // tampilkan tiap 200 ms
   }
 }
 
-// Setup
+// ================= SETUP =================
 void setup() {
   Serial.begin(115200);
   delay(1000);
+  Serial.println("=== Program Encoder Dual-Core ===");
 
-  pinMode(CLK, INPUT);
-  pinMode(DT, INPUT);
-  pinMode(SW, INPUT_PULLUP);
-
-  // Jalankan task Core 0 (baca encoder)
+  // Task Core 0 (baca encoder + tombol)
   xTaskCreatePinnedToCore(
     taskCore0, "TaskCore0", 2048, NULL, 1, &TaskCore0, 0
   );
 
-  // Jalankan task Core 1 (tampilkan hasil)
+  // Task Core 1 (tampilkan hasil)
   xTaskCreatePinnedToCore(
     taskCore1, "TaskCore1", 2048, NULL, 1, &TaskCore1, 1
   );
 }
 
 void loop() {
-  // semua pekerjaan ada di task
+  // Kosong, semua kerja di task FreeRTOS
 }
