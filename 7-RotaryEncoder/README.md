@@ -152,6 +152,6 @@ Core 1 - Posisi Encoder = 2	Tombol = Ditekan
 ---
 
 ## 🎥 Video
-[![Watch Demo]](../assets/RotaryEncoder.gif)
+![[Watch Demo]](../assets/RotaryEncoder.gif)
 
 ---

@@ -192,7 +192,7 @@ xSemaphoreGive(i2cMutex);
 ---
 
 ## 🎥 Video
-[![Watch Demo]](../assets/OLED.gif)
+![[Watch Demo]](../assets/OLED.gif)
 
 ---
 

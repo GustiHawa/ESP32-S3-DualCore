@@ -128,6 +128,6 @@ Core 1: Posisi Servo terakhir = 15
 ![Servo Movement](../assets/Servo.jpeg)
 
 ## 🎥 Bukti Video
-[Tonton di Google Drive](../assets/MotorServo.gif)
+![Tonton di Google Drive](../assets/MotorServo.gif)
 
 ---

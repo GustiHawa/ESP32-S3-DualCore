@@ -145,7 +145,7 @@ Core 1: Putar CCW
 ---
 
 ## 🎥 Video 
-[Tonton Video](../assets/MotorStepper.jpeg)
+![Tonton Video](../assets/MotorStepper.jpeg)
 
 ---
 

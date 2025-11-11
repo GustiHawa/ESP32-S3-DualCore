@@ -118,6 +118,6 @@ void loop() {
 ---
 
 ## 🎥 Video
-[🎬 Tonton Video](../assets/Buzzer.gif)
+![🎬 Tonton Video](../assets/Buzzer.gif)
 
 ---

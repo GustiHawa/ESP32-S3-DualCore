@@ -134,7 +134,7 @@ void loop() {
 ---
 
 ## 🎥 Video
-[🎬 Tonton Video](../assets/PushButton.gif)
+![Tonton Video](../assets/PushButton.gif)
 
 ---
 

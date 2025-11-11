@@ -104,7 +104,7 @@ void loop() {
 ![Serial Monitor](../assets/Potensiometer.jpeg)
 
 ## 🎥 Video
-[Tonton Video](../assets/Potensiometer.gif)
+![Tonton Video](../assets/Potensiometer.gif)
 
 ---
 
