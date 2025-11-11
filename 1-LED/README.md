@@ -112,6 +112,6 @@ void loop() {
 ![LED ESP32-S3](../assets/LED.jpeg)
 
 ## 🎥 Video
-[Tonton di Google Drive](../assets/LED.gif)
+![Tonton di Google Drive](../assets/LED.gif)
 
 ---
