@@ -123,12 +123,11 @@ Core 1: Posisi Servo terakhir = 15
 ...
 ```
 
-## 📸 Bukti Visual
+## 📸 FOTO
 
 ![Servo Movement](../assets/Servo.jpeg)
 
 ## 🎥 Bukti Video
-
-Demo Servo Dual-Core ESP32-S3: 🎬 [Tonton di Google Drive](https://drive.google.com/file/d/1gyTHP7rjLDhmFAWdl-1wvUcgD_BP9_G0/view?usp=drive_link)
+[Tonton di Google Drive](../assets/MotorServo.gif)
 
 ---

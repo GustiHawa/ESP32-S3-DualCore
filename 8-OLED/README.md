@@ -186,16 +186,13 @@ xSemaphoreGive(i2cMutex);
 
 ---
 
-## 📸 Bukti Visual
+## 📸 Visual
 ![OLED ESP32-S3](../assets/OLED.jpeg)
 
 ---
 
-## 🎥 Bukti Video
-
-**Demo OLED Dual-Core ESP32-S3**
-
-[![Watch Demo](https://img.shields.io/badge/▶️-Tonton_Video-red?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/1WhjZJjva1SeoBvDoKNkMHuDAgVnGKko2/view?usp=drive_link)
+## 🎥 Video
+[![Watch Demo]](../assets/OLED.gif)
 
 ---
 

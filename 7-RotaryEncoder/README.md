@@ -147,12 +147,11 @@ Core 1 - Posisi Encoder = 2	Tombol = Ditekan
 
 ---
 
-## 📸 Bukti Visual
+## 📸 FOTO
 ![Rotary Encoder ESP32-S3](../assets/Encoder.jpeg)
 ---
 
-## 🎥 Bukti Video
-
-[![Watch Demo](https://img.shields.io/badge/▶️-Tonton_Video-red?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/1N-Wtj75jM8LOo5hVIUhadZ28ZHUN10-I/view?usp=drive_link)
+## 🎥 Video
+[![Watch Demo]](../assets/RotaryEncoder.gif)
 
 ---

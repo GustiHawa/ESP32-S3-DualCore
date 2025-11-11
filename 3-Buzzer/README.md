@@ -112,17 +112,12 @@ void loop() {
 
 ---
 
-## 📸 Bukti Visual
-
-### Setup Hardware Buzzer
-
+## 📸 FOTO
 ![Setup Buzzer ESP32-S3](../assets/Buzzer.jpeg)
 
 ---
 
-## 🎥 Bukti Video
-
-**Demo Buzzer Dual-Core ESP32-S3:**  
-[🎬 Tonton Video](https://drive.google.com/file/d/1-cIQSfEhlijLUPPBdNeKIqrI9tFowRDY/view?usp=drive_link)
+## 🎥 Video
+[🎬 Tonton Video](../assets/Buzzer.gif)
 
 ---

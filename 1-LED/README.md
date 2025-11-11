@@ -107,11 +107,11 @@ void loop() {
 - Semua LED berjalan paralel, menampilkan log di Serial Monitor sesuai core masing-masing
 - Pola LED konsisten tanpa saling memblokir
 
-## 📸 Bukti Visual
+## 📸 FOTO
 
 ![LED ESP32-S3](../assets/LED.jpeg)
 
-
-Demo LED Multi-Core ESP32-S3: 🎬 [Tonton di Google Drive](https://drive.google.com/file/d/1R-2hCsyus2fJ4Nnk8G522F3Wh2P1NXfx/view?usp=drive_link)
+## 🎥 Video
+[Tonton di Google Drive](../assets/LED.gif)
 
 ---

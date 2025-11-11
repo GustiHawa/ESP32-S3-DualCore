@@ -126,17 +126,15 @@ void loop() {
 
 ---
 
-## 📸 Bukti Visual
+## 📸 FOTO
 
 ![Push Button ESP32-S3](../assets/PushButton.jpeg)
 
 
 ---
 
-## 🎥 Bukti Video
-
-**Demo Tombol Multi-Core ESP32-S3:**  
-[🎬 Tonton Video](https://drive.google.com/file/d/1gRZ2109e8kHFwDd0dmIdIGReHku341wi/view?usp=drive_link)
+## 🎥 Video
+[🎬 Tonton Video](../assets/PushButton.gif)
 
 ---
 

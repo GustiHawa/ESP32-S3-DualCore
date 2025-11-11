@@ -140,15 +140,12 @@ Core 1: Putar CCW
 
 ---
 
-## 📸 Bukti Visual
+## 📸 FOTO
 ![Motor Stepper ESP32-S3](../assets/MotorStepper.jpeg)
 ---
 
-## 🎥 Video Demo
-
-**Demo Stepper Motor Dual-Core ESP32-S3:**
-
-🎬 **[Tonton Video](https://drive.google.com/file/d/1PKe-uThZ8WXlUQ0PXVnJdljeesBZHtiY/view?usp=drive_link)**
+## 🎥 Video 
+[Tonton Video](../assets/MotorStepper.jpeg)
 
 ---
 

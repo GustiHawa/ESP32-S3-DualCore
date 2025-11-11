@@ -100,15 +100,11 @@ void loop() {
 - Dua task berjalan paralel tanpa mengganggu satu sama lain
 - Nilai potensiometer berkisar antara 0-4095 (12-bit ADC)
 
-## 📸 Bukti Visual
-
-### Setup Hardware
-
+## 📸 FOTO
 ![Serial Monitor](../assets/Potensiometer.jpeg)
 
-## 🎥 Bukti Video
-
-Demo Dual-Core Potensiometer ESP32-S3: 🎬 [Tonton Video](https://drive.google.com/file/d/1Jp_lXmM6zkvm0qjkMqX6lZ6nYYiAlEL5/view?usp=drive_link)
+## 🎥 Video
+[Tonton Video](../assets/Potensiometer.gif)
 
 ---
 
